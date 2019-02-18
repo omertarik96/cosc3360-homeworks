@@ -16,6 +16,7 @@ int main()
     std::string current_direction;
     int max_number_cars_allowed_for_direction;
     int number_of_cars = 0;
+    pid_t pid; // Parent process id
 
     // Create queues for each direction: E,S,N,W
     std::queue<Car> east_queue;
@@ -57,6 +58,7 @@ int main()
 
     for (int j = number_of_cars; j >= 0; j--)
     {
+
         Car temp;
         if (current_direction == "E")
         {
@@ -65,9 +67,14 @@ int main()
                 std::cout << "Current direction: Eastbound\n";
                 for (int k = 0; k < max_number_cars_allowed_for_direction; k++)
                 {
-                    temp = east_queue.front();
-                    east_queue.pop();
-                    std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << "sec(s)\n";
+                    if (pid == fork() == 0) // Child process
+                    {
+                        temp = east_queue.front();
+                        east_queue.pop();
+                        std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
+                        sleep(std::stoi(temp.duration));
+                        break;
+                    }
                 }
             }
             current_direction = "S";
@@ -79,9 +86,14 @@ int main()
                 std::cout << "Current direction: Southbound\n";
                 for (int k = 0; k < max_number_cars_allowed_for_direction; k++)
                 {
-                    temp = south_queue.front();
-                    south_queue.pop();
-                    std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
+                    if (pid == fork() == 0) // Child process
+                    {
+                        temp = south_queue.front();
+                        south_queue.pop();
+                        std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
+                        sleep(std::stoi(temp.duration));
+                        break;
+                    }
                 }
             }
             current_direction = "W";
@@ -93,9 +105,14 @@ int main()
                 std::cout << "Current direction: Westbound\n";
                 for (int k = 0; k < max_number_cars_allowed_for_direction; k++)
                 {
-                    temp = west_queue.front();
-                    west_queue.pop();
-                    std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
+                    if (pid == fork() == 0) // Child process
+                    {
+                        temp = west_queue.front();
+                        west_queue.pop();
+                        std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
+                        sleep(std::stoi(temp.duration));
+                        break;
+                    }
                 }
             }
             current_direction = "N";
@@ -107,13 +124,23 @@ int main()
                 std::cout << "Current direction: Westbound\n";
                 for (int k = 0; k < max_number_cars_allowed_for_direction; k++)
                 {
-                    temp = north_queue.front();
-                    north_queue.pop();
-                    std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
+                    if (pid == fork() == 0) // Child process
+                    {
+                        temp = north_queue.front();
+                        north_queue.pop();
+                        std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
+                        sleep(std::stoi(temp.duration));
+                        break;
+                    }
                 }
             }
             current_direction = "E";
         }
+    }
+
+    for (int j = number_of_cars; j >= 0; j--)
+    {
+        wait(NULL);
     }
     return 0;
 }
