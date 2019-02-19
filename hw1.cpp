@@ -39,108 +39,171 @@ int main()
         if (temp.direction == "E")
         {
             east_queue.push(temp);
+            number_of_cars++;
         }
         else if (temp.direction == "S")
         {
             south_queue.push(temp);
+            number_of_cars++;
         }
         else if (temp.direction == "W")
         {
             west_queue.push(temp);
+            number_of_cars++;
         }
         else if (temp.direction == "N")
         {
             north_queue.push(temp);
+            number_of_cars++;
         }
-
-        number_of_cars++;
     }
 
-    for (int j = number_of_cars; j >= 0; j--)
+    while (number_of_cars > 0)
     {
 
         Car temp;
+        bool initial = true;
+        int j = max_number_cars_allowed_for_direction;
+
         if (current_direction == "E")
         {
-            if (east_queue.size() != 0)
+            while (j > 0 && number_of_cars > 0)
             {
-                std::cout << "Current direction: Eastbound\n";
-                for (int k = 0; k < max_number_cars_allowed_for_direction; k++)
+                if (east_queue.size() != 0)
                 {
-                    if (pid == fork() == 0) // Child process
+                    if (initial)
                     {
-                        temp = east_queue.front();
-                        east_queue.pop();
-                        std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
-                        sleep(std::stoi(temp.duration));
-                        break;
+                        std::cout << "Current direction: Eastbound\n";
+                        initial = false;
                     }
+
+                    temp = east_queue.front();
+                    east_queue.pop();
+                    std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
+                    if (!fork())
+                    {
+                        sleep(std::stoi(temp.duration));
+                        return 0;
+                    }
+                    else
+                    {
+                        wait(NULL);
+                        number_of_cars--;
+                        j--;
+                    }
+                }
+                else
+                {
+                    j = 0;
                 }
             }
             current_direction = "S";
         }
         else if (current_direction == "S")
         {
-            if (south_queue.size() != 0)
+            while (j > 0 && number_of_cars > 0)
             {
-                std::cout << "Current direction: Southbound\n";
-                for (int k = 0; k < max_number_cars_allowed_for_direction; k++)
+                if (south_queue.size() != 0)
                 {
-                    if (pid == fork() == 0) // Child process
+                    if (initial)
                     {
-                        temp = south_queue.front();
-                        south_queue.pop();
-                        std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
-                        sleep(std::stoi(temp.duration));
-                        break;
+                        std::cout << "Current direction: Southbound\n";
+                        initial = false;
                     }
+
+                    temp = south_queue.front();
+                    south_queue.pop();
+                    std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
+                    if (!fork())
+                    {
+                        sleep(std::stoi(temp.duration));
+                        return 0;
+                    }
+                    else
+                    {
+                        wait(NULL);
+                        number_of_cars--;
+                        j--;
+                    }
+                }
+                else
+                {
+                    j = 0;
                 }
             }
             current_direction = "W";
         }
         else if (current_direction == "W")
         {
-            if (west_queue.size() != 0)
+            while (j > 0 && number_of_cars > 0)
             {
-                std::cout << "Current direction: Westbound\n";
-                for (int k = 0; k < max_number_cars_allowed_for_direction; k++)
+                if (west_queue.size() != 0)
                 {
-                    if (pid == fork() == 0) // Child process
+
+                    if (initial)
                     {
-                        temp = west_queue.front();
-                        west_queue.pop();
-                        std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
-                        sleep(std::stoi(temp.duration));
-                        break;
+                        std::cout << "Current direction: Westbound\n";
+                        initial = false;
                     }
+
+                    temp = west_queue.front();
+                    west_queue.pop();
+                    std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
+                    if (!fork())
+                    {
+                        sleep(std::stoi(temp.duration));
+                        return 0;
+                    }
+                    else
+                    {
+                        wait(NULL);
+                        number_of_cars--;
+                        j--;
+                    }
+                }
+                else
+                {
+                    j = 0;
                 }
             }
             current_direction = "N";
         }
         else if (current_direction == "N")
         {
-            if (north_queue.size() != 0)
+            while (j > 0 && number_of_cars > 0)
             {
-                std::cout << "Current direction: Westbound\n";
-                for (int k = 0; k < max_number_cars_allowed_for_direction; k++)
+                if (north_queue.size() != 0)
                 {
-                    if (pid == fork() == 0) // Child process
+
+                    if (initial)
                     {
-                        temp = north_queue.front();
-                        north_queue.pop();
-                        std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
-                        sleep(std::stoi(temp.duration));
-                        break;
+                        std::cout << "Current direction: Northbound\n";
+                        initial = false;
                     }
+
+                    temp = north_queue.front();
+                    north_queue.pop();
+                    std::cout << "Car " << temp.plate << " is using intersection for " << temp.duration << " sec(s)\n";
+                    if (!fork())
+                    {
+                        sleep(std::stoi(temp.duration));
+                        return 0;
+                    }
+                    else
+                    {
+                        wait(NULL);
+                        number_of_cars--;
+                        j--;
+                    }
+                }
+                else
+                {
+                    j = 0;
                 }
             }
             current_direction = "E";
         }
     }
 
-    for (int j = number_of_cars; j >= 0; j--)
-    {
-        wait(NULL);
-    }
     return 0;
 }
